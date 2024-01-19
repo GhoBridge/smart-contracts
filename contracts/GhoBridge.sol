@@ -87,6 +87,8 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
 
         ghoToken.transferFrom(msg.sender, address(this), amount);
 
+        ghoToken.burn(amount);
+
         address votingContractAddress = supportedContracts[
             destinationChainSelector
         ];
@@ -149,16 +151,6 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
 
         credit[msg.sender] -= amount;
 
-        uint256 contractGhoBalance = ghoToken.balanceOf(address(this));
-
-        if (contractGhoBalance >= amount) {
-            ghoToken.transfer(msg.sender, amount);
-            return;
-        }
-
-        amount -= contractGhoBalance;
-        ghoToken.transfer(msg.sender, contractGhoBalance);
-
-        // TODO: mint new gho tokens to the caller
+        ghoToken.mint(msg.sender, amount);
     }
 }
