@@ -3,10 +3,6 @@ import fs from "fs";
 import path from "path";
 import { chains } from "./common";
 
-const ccipConfigs = {
-  "": {},
-};
-
 async function writeJSONToFile(
   data: any,
   fileName: string,
