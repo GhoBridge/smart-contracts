@@ -23,3 +23,6 @@ export const chains: Record<string, ChainInfo> = {
     selector: "12532609583862916517",
   },
 };
+
+export const delay = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));

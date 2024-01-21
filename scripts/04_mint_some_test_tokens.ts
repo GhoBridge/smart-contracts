@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { chains } from "./common";
+import { chains, delay } from "./common";
 import fs from "fs";
 import type { Address } from "viem";
 import { parseEther } from "viem";
@@ -33,11 +33,15 @@ async function mintSomeTestTokens() {
     account,
   ]);
 
+  await delay(10000);
+
   await token.write.addFacilitator([
     account,
     "tester",
     parseEther("1000000000"),
   ]);
+
+  await delay(10000);
 
   await token.write.mint([account, parseEther("1000000000")]);
 }

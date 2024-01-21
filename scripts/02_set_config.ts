@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { chains } from "./common";
+import { chains, delay } from "./common";
 import fs from "fs";
 import type { Address } from "viem";
 import { parseEther } from "viem";
@@ -33,6 +33,8 @@ async function setConfig() {
     await token.read.FACILITATOR_MANAGER_ROLE(),
     account,
   ]);
+
+  await delay(10000);
 
   await token.write.addFacilitator([
     ghoBridgeAddress,
