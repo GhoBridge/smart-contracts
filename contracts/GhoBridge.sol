@@ -29,6 +29,7 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
     error ReceiverCannotBeZeroAddress();
     error InsufficientBalance();
     error OnlySupportedContracts();
+    error NotEnoughBalance(uint256 linkBalance, uint256 fees);
 
     mapping(address => uint256) public credit;
 
@@ -70,20 +71,20 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
     }
 
     function initiateBridging(
-        uint256 destinationChainSelector,
+        uint64 destinationChainSelector,
         uint256 amount
     ) public {
         initiateBridging(destinationChainSelector, msg.sender, amount);
     }
 
     function initiateBridging(
-        uint256 destinationChainSelector,
+        uint64 destinationChainSelector,
         address receiver,
         uint256 amount
     ) public {
         if (supportedContracts[destinationChainSelector] == address(0))
             revert ChainNotSupported();
-        if (reciver == address(0)) revert ReceiverCannotBeZeroAddress();
+        if (receiver == address(0)) revert ReceiverCannotBeZeroAddress();
 
         ghoToken.transferFrom(msg.sender, address(this), amount);
 
@@ -113,7 +114,7 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
             data: data,
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 200_000, strict: false})
+                Client.EVMExtraArgsV1({gasLimit: 200_000})
             ),
             feeToken: address(linkToken)
         });
