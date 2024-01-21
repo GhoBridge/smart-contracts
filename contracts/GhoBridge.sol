@@ -7,12 +7,15 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {GhoToken} from "./GhoToken.sol";
+import {IGhoFacilitator} from "./interfaces/IGhoFacilitator.sol";
 
-contract GhoBridge is OwnerIsCreator, CCIPReceiver {
+contract GhoBridge is OwnerIsCreator, CCIPReceiver, IGhoFacilitator {
     IRouterClient public router;
     LinkTokenInterface public linkToken;
 
     GhoToken public ghoToken;
+
+    address private _treasury;
 
     uint8 public totalSupportedChains;
 
@@ -41,6 +44,22 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver {
         router = _router;
         linkToken = _linkToken;
         ghoToken = _ghoToken;
+    }
+
+    function updateGhoTreasury(address newGhoTreasury) external onlyOwner {
+        address oldTreasury = _treasury;
+        _treasury = newGhoTreasury;
+        emit GhoTreasuryUpdated(oldTreasury, newGhoTreasury);
+    }
+
+    function distributeFeesToTreasury() external onlyOwner {
+        uint256 amount = ghoToken.balanceOf(address(this));
+        ghoToken.transfer(_treasury, amount);
+        emit FeesDistributedToTreasury(_treasury, address(ghoToken), amount);
+    }
+
+    function getGhoTreasury() external view returns (address) {
+        return _treasury;
     }
 
     function addSupportedContract(
