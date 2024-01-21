@@ -58,14 +58,11 @@ async function deployContracts() {
     console.log(e);
   }
 
-  // create the contract deployment file
   const fileName = `${network}.json`;
   const data = { token: ghoToken.address, address: ghoBridge.address };
   writeJSONToFile(data, fileName);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 deployContracts().catch((error) => {
   console.error(error);
   process.exitCode = 1;
