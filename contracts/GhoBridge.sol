@@ -173,4 +173,8 @@ contract GhoBridge is OwnerIsCreator, CCIPReceiver, IGhoFacilitator {
 
         ghoToken.mint(msg.sender, amount);
     }
+
+    function withdrawLink() external onlyOwner {
+        linkToken.transfer(msg.sender, linkToken.balanceOf(address(this)));
+    }
 }
