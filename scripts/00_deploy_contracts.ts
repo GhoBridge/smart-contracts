@@ -26,7 +26,7 @@ async function deployContracts() {
   const admin = (await hre.viem.getWalletClients())[0].account.address;
 
   const ghoToken = await hre.viem.deployContract("GhoToken", [admin], {
-    confirmations: 5,
+    confirmations: 10,
   });
 
   console.log(`Gho Token is deployed to ${ghoToken.address}`);
@@ -43,7 +43,7 @@ async function deployContracts() {
   const ghoBridge = await hre.viem.deployContract(
     "GhoBridge",
     [chain.relayer, chain.linkToken, ghoToken.address],
-    { confirmations: 5 }
+    { confirmations: 10 }
   );
 
   console.log(`Gho Bridge is deployed to ${ghoBridge.address}`);
